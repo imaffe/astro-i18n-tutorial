@@ -1,0 +1,46 @@
+---
+// Redirect to Top page for user's system locale
+// Basically, you don't need to edit this file.
+
+import { LOCALES, DEFAULT_LOCALE } from "@/i18n";
+
+const langs = Object.keys(LOCALES);
+const baseUrl = import.meta.env.PROD ? Astro.site : "/";
+const defaultLocale = DEFAULT_LOCALE;
+---
+
+<html lang={DEFAULT_LOCALE}>
+  <head>
+    <meta charset="UTF-8" />
+    <title>redirect...</title>
+
+    <noscript>
+      <meta
+        http-equiv="refresh"
+        content={`0;url=${baseUrl + DEFAULT_LOCALE}/`}
+      />
+    </noscript>
+
+    <script is:inline define:vars={{ langs, baseUrl, defaultLocale }}>
+      if (
+        localStorage.selectedLang &&
+        langs.includes(localStorage.selectedLang)
+      ) {
+        location.href = `${baseUrl + localStorage.selectedLang}/`;
+      } else {
+        const browserLang = navigator.language.toLowerCase();
+
+        if (langs.includes(browserLang)) {
+          location.href = `${baseUrl + browserLang}/`;
+        } else if (langs.includes(browserLang.split("-")[0])) {
+          location.href = `${baseUrl + browserLang.split("-")[0]}/`;
+        } else {
+          location.href = `${baseUrl + defaultLocale}/`;
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <h1>redirect...</h1>
+  </body>
+</html>
